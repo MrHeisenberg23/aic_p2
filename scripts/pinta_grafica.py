@@ -41,6 +41,7 @@ else:
 		axs[0].grid()
 		axs[1].grid()
 		plt.show()
+
 	else:
 		print("Unknown destination / not a file")
 
