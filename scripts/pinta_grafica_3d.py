@@ -13,59 +13,64 @@ if len(sys.argv) != 2:
 else:
 	directorio = pathlib.Path.cwd().joinpath('ficheros', sys.argv[len(sys.argv)-1])
 	if(os.path.isfile(directorio)):
-		pruebas = 4
+		pruebas = 7
 		print("Plotting data from file: ", directorio)
 		fich = open (directorio,'r')
 		data = {i:[[],[]] for i in range(200, 3400, 200)}
 		print("Our dictionary is empty:", data)
 		data_x_y = []
 		data_y_z = []
+		X = []
+		Y = []
+		F = []
 
 		#Structure has been established: reading
 		fich = open(directorio, 'r')
 		for lines in fich.readlines():
 			potencia_int = []
-			energia_int = []
+			tiempo_int = []
 			bifurcacion = lines.split(":")
 			hz_usado = bifurcacion[0]
 			potencia = bifurcacion[1].split()[:pruebas]
-			energia = bifurcacion[2].split()[:pruebas]
+			tiempo = bifurcacion[2].split()[:pruebas]
 
 			for i in potencia:
 				potencia_int.append(int(i))
+				Y.append(int(i))
 
-			for i in energia:
-				energia_int.append(int(i))
+			for i in tiempo:
+				tiempo_int.append(int(i))
+				X.append(int(i))
+				F.append(int(hz_usado))
+
 
 			data[int(hz_usado)][0] = potencia_int
-			data[int(hz_usado)][1] = energia_int
+			data[int(hz_usado)][1] = tiempo_int
 			data_x_y.append(potencia_int)
-			data_y_z.append(energia_int)
+			data_y_z.append(tiempo_int)
 		print("Our dictionary once filled: ", data)
 
 		#Structure has been filled with data: graphics
 		fig = plt.figure()
-		ax = fig.gca(projection='3d')
+		ax = fig.add_subplot(111, projection='3d')
 
-		# Make data.
-		X, Y = np.meshgrid(data_x_y, data_y_z)
+		frecuencias = []
+		frecuencias_3d = []
+		for i in range(200, 3400, 200):
+			frecuencias.append(i)
 
-		R = np.sqrt(X**2 + Y**2)
-		Z = np.sin(R)
+		#for i in range(200, 3400, 200):
+		#	frecuencias_3d.append(frecuencias)
+		frecuencias_3d = [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000, 3200]
+		dx = dy = dz = 25
+		ax.bar3d(F, X, Y, dx, dy, dz,color='#00ceaa')
 
-		# Plot the surface.
-		graph = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='hot')
-
-		ax.set_ylim(0,20)
-		ax.set_xlim(0,20)
-
-		# Customize the z axis.
-		ax.set_zlim(0, 20)
-		ax.zaxis.set_major_locator(LinearLocator(10))
-		ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-
-		# Add a color bar which maps values to colors.
-		fig.colorbar(graph, shrink=0.5, aspect=5)
+		ax.set_xlabel("Frecuencia")
+		ax.set_ylabel("Tiempo")
+		ax.set_zlabel("Potencia")
+		print(len(X))
+		print(len(Y))
+		print(len(F))
 
 		plt.show()
 	else:
