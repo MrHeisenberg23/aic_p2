@@ -1,4 +1,5 @@
 import random
+import math
 import sys
 import pathlib
 import os.path
@@ -17,63 +18,79 @@ else:
 		print("Plotting data from file: ", directorio)
 		fich = open (directorio,'r')
 		data = {i:[[],[]] for i in range(200, 3400, 200)}
-		print("Our dictionary is empty:", data)
-		data_x_y = []
-		data_y_z = []
+		frecuencias_aceptadas = [i for i in range(200, 3400, 200)]
 		X = []
 		Y = []
 		F = []
+		alturas = []
+		valores_leidos = 0
 
 		#Structure has been established: reading
 		fich = open(directorio, 'r')
+
+		array = []
 		for lines in fich.readlines():
-			potencia_int = []
-			tiempo_int = []
 			bifurcacion = lines.split(":")
-			hz_usado = bifurcacion[0]
-			potencia = bifurcacion[1].split()[:pruebas]
-			tiempo = bifurcacion[2].split()[:pruebas]
+			hz_usado = int(bifurcacion[0])
 
-			for i in potencia:
-				potencia_int.append(int(i))
-				Y.append(int(i))
+			if hz_usado in frecuencias_aceptadas:
+				array.append(len(bifurcacion[1].split()))
+				array.append(len(bifurcacion[2].split()))
 
-			for i in tiempo:
-				tiempo_int.append(int(i))
-				X.append(int(i))
-				F.append(int(hz_usado))
+		minimo = min(array)
+		if minimo < pruebas:
+			pruebas = minimo
 
+		fich.seek(0)
 
-			data[int(hz_usado)][0] = potencia_int
-			data[int(hz_usado)][1] = tiempo_int
-			data_x_y.append(potencia_int)
-			data_y_z.append(tiempo_int)
-		print("Our dictionary once filled: ", data)
+		for lines in fich.readlines():
+			print(lines)
+			bifurcacion = lines.split(":")
+			hz_usado = int(bifurcacion[0])
+
+			if hz_usado in frecuencias_aceptadas:
+				print(hz_usado)
+				potencia = bifurcacion[1].split()[:pruebas]
+				tiempo = bifurcacion[2].split()[:pruebas]
+
+				for i in tiempo:
+					Y.append(int(i))
+
+				for i in potencia:
+					X.append(int(i))
+					F.append(int(hz_usado))
+					alturas.append(int(i))
+
+				data[int(hz_usado)][0] = potencia
+				data[int(hz_usado)][1] = tiempo
+				valores_leidos = valores_leidos + 1
 
 		#Structure has been filled with data: graphics
-		fig = plt.figure()
+		fig = plt.figure(figsize=(5, 4))
 		ax = fig.add_subplot(111, projection='3d')
 
-		frecuencias = []
-		frecuencias_3d = []
-		for i in range(200, 3400, 200):
-			frecuencias.append(i)
+		dx = 5
+		dy = 1
+		dz = 0
 
-		#for i in range(200, 3400, 200):
-		#	frecuencias_3d.append(frecuencias)
-		frecuencias_3d = [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000, 3200]
-		dx = dy = dz = 25
-		ax.bar3d(F, X, Y, dx, dy, dz,color='#00ceaa')
+		colores = ['r', 'g', 'c', 'b', 'm', 'y', 'lime', 'hotpink', 'khaki', 'peru', 'navy', 'silver', 'thistle', 'grey', 'tomato', 'k']
+		colors = colores[:valores_leidos]
+
+		x = 0
+		for i in range(len(X)):
+			x = math.floor(i/pruebas)
+			ax.bar3d(F[i], Y[i], 0, dx, dy, alturas[i],color=colors[x],shade=False)
+
+		#ax = plt.axes(projection='3d')
+		#ax.scatter(F, X, Y, c=Y, cmap='viridis', linewidth=0.5);
 
 		ax.set_xlabel("Frecuencia")
 		ax.set_ylabel("Tiempo")
 		ax.set_zlabel("Potencia")
-#		ax.set_xlim(2000)
-#		ax.set_ylim(50)
-#		ax.set_zlim(50)
-		print(len(X))
-		print(len(Y))
-		print(len(F))
+
+		print("Frecuencia: ",F)
+		print("X: ",X)
+		print("Y: ",Y)
 
 		plt.show()
 	else:
