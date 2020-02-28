@@ -44,12 +44,12 @@ else:
 		fich.seek(0)
 
 		for lines in fich.readlines():
-			print(lines)
+
 			bifurcacion = lines.split(":")
 			hz_usado = int(bifurcacion[0])
 
 			if hz_usado in frecuencias_aceptadas:
-				print(hz_usado)
+
 				potencia = bifurcacion[1].split()[:pruebas]
 				tiempo = bifurcacion[2].split()[:pruebas]
 
@@ -64,6 +64,8 @@ else:
 				data[int(hz_usado)][0] = potencia
 				data[int(hz_usado)][1] = tiempo
 				valores_leidos = valores_leidos + 1
+
+		fich.close()
 
 		#Structure has been filled with data: graphics
 		fig = plt.figure(figsize=(5, 4))
