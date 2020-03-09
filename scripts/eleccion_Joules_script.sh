@@ -1,5 +1,9 @@
-
 #!/bin/bash
+
+captura_trap(){
+	contador=$((contador+1))
+	echo "Capturada la señal"
+}
 
 if [ $# -ne 1 ]; then
 	echo "necesita dos parametros"
@@ -14,7 +18,7 @@ fi
 
 contador=0
 
-trap "contador=$((contador+1))" USR1
+trap captura_trap USR1
 
 muestras=$1
 touch aux volcado_datos
@@ -23,11 +27,9 @@ echo "PID de la terminal original: $sortpid"
 for i in `seq 1 1 $muestras`; do
 	touch auxiliar$i
 	./volcado.sh auxiliar$i $sortpid
-	sleep 1
 done
 until [ $contador -eq $muestras ]; do
-	echo "Waiting, count: $contador"
-	sleep 1
+	: #busy-wait
 done
 echo "Tareas finalizadas"
 ./columna_Joules.sh
