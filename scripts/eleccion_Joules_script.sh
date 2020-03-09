@@ -1,20 +1,32 @@
+
 #!/bin/bash
-trap contador=$((contador+1)) SIGUSR1
+
+if [ $# -ne 1 ]; then
+	echo "necesita dos parametros"
+	exit 1
+fi
+
 if [ -f "auxiliar1" ]; then
 	rm auxiliar*
 	rm aux
+	rm volcado_datos
 fi
-muestras=$1
+
 contador=0
-touch aux
+
+trap "contador=$((contador+1))" USR1
+
+muestras=$1
+touch aux volcado_datos
 sortpid=$$
 echo "PID de la terminal original: $sortpid"
 for i in `seq 1 1 $muestras`; do
 	touch auxiliar$i
 	./volcado.sh auxiliar$i $sortpid
+	sleep 1
 done
-while [ $contador -ne $muestras ]; do
-	echo "esperando finalizacion: contador a $contador."
+until [ $contador -eq $muestras ]; do
+	echo "Waiting, count: $contador"
 	sleep 1
 done
 echo "Tareas finalizadas"
