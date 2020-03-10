@@ -14,6 +14,7 @@ else:
 		fich = open (directorio,'r')
 		array_x = []
 		array_y = []
+		comprobacion = []
 		indice = 0
 		her = [i for i in range(200, 3400, 200)]
 
@@ -30,10 +31,17 @@ else:
 					media = media + int(add)
 					contador = contador + 1
 				array_y.append(media/contador)
+				comprobacion.append(contador)
 
 		fich.close()
 		print("Datos: ", array_y)
 		print("Ejecucion: ", array_x)
+
+		aux = comprobacion[0]
+		for i in comprobacion[1:]:
+			if aux != comprobacion[i]:
+				print("Descuadre en los datos")
+				sys.exit()
 
 		explode = []
 		scatter = []

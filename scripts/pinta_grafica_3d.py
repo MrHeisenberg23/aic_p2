@@ -14,7 +14,7 @@ if len(sys.argv) != 2:
 else:
 	directorio = pathlib.Path.cwd().joinpath('ficheros', sys.argv[len(sys.argv)-1])
 	if(os.path.isfile(directorio)):
-		pruebas = 7
+
 		print("Plotting data from file: ", directorio)
 		fich = open (directorio,'r')
 		data = {i:[[],[]] for i in range(200, 3400, 200)}
@@ -37,12 +37,10 @@ else:
 				array.append(len(bifurcacion[1].split()))
 				array.append(len(bifurcacion[2].split()))
 
-		minimo = min(array)
-		if minimo < pruebas:
-			pruebas = minimo
+		pruebas = min(array)
+		print("PRUEBAS: ", pruebas)
 
 		fich.seek(0)
-
 		for lines in fich.readlines():
 
 			bifurcacion = lines.split(":")
@@ -71,7 +69,7 @@ else:
 		fig = plt.figure(figsize=(5, 4))
 		ax = fig.add_subplot(111, projection='3d')
 
-		dx = 5
+		dx = 30
 		dy = 1
 		dz = 0
 
@@ -83,16 +81,13 @@ else:
 			x = math.floor(i/pruebas)
 			ax.bar3d(F[i], Y[i], 0, dx, dy, alturas[i],color=colors[x],shade=False)
 
-		#ax = plt.axes(projection='3d')
-		#ax.scatter(F, X, Y, c=Y, cmap='viridis', linewidth=0.5);
-
 		ax.set_xlabel("Frecuencia")
 		ax.set_ylabel("Tiempo")
 		ax.set_zlabel("Potencia")
 
-		print("Frecuencia: ",F)
-		print("X: ",X)
-		print("Y: ",Y)
+		print("Frecuencia: ", F)
+		print("X: ", X)
+		print("Y: ", Y)
 
 		plt.show()
 	else:
