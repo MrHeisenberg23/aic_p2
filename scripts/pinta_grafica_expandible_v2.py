@@ -49,7 +49,7 @@ else:
 		fig = go.Figure()
 
 		for i in range(len(tiempos)):
-			fig.add_trace(go.Scatter(x=tiempos[i], y=energias[i], mode='lines+markers',name=str(porcentaje_ceros[i]) + "percent of zeros"))
+			fig.add_trace(go.Scatter(x=tiempos[i], y=energias[i], mode='lines+markers',name=str(porcentaje_ceros[i]) + " percent of zeros"))
 
 		fig.show()
 
